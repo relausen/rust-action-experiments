@@ -66,3 +66,10 @@ jobs:
           # Move the built binary where you want it
           mkdir -p "./releases"
           mv "${BIN_OUTPUT}" "./releases/${BIN_RELEASE}"
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.target }}
+          path: ./releases/
+          
