@@ -36,7 +36,11 @@ jobs:
             command: cargo
 
           - build: windows-msvc
-            # os: windows-latest
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            command: cargo
+
+          - build: windows-gnu
             os: ubuntu-latest
             target: x86_64-pc-windows-msvc
             command: cross
