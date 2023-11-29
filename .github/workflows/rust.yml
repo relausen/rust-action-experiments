@@ -19,8 +19,7 @@ env:
 jobs:
   build-and-upload:
     name: Build and upload
-    runs-on: ubuntu-latest
-    # runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
@@ -29,14 +28,18 @@ jobs:
           - build: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
+            command: cargo
 
           - build: macos
             os: macos-latest
             target: aarch64-apple-darwin
+            command: cargo
 
           - build: windows-msvc
-            os: windows-latest
+            # os: windows-latest
+            os: ubuntu-latest
             target: x86_64-pc-windows-msvc
+            command: cross
 
     steps:
       - name: Checkout
@@ -54,13 +57,20 @@ jobs:
           # Make Rust compile to our target (defined in the matrix)
           targets: ${{ matrix.target }}
 
+      - name: Install Cross
+        if: matrix.command == 'cross'
+        shell: bash
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall --no-confirm cross
+ 
       - name: Build
-        # run: cargo build --verbose --release --target ${{ matrix.target }}
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --verbose --release --target ${{ matrix.target }}
+        run: ${{ matrix.command }} build --verbose --release --target ${{ matrix.target }}
+        # uses: actions-rs/cargo@v1
+        # with:
+        #   use-cross: true
+        #   command: build
+        #   args: --verbose --release --target ${{ matrix.target }}
 
       - name: Build archive
         shell: bash
