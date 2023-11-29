@@ -19,7 +19,8 @@ env:
 jobs:
   build-and-upload:
     name: Build and upload
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    # runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
@@ -54,12 +55,12 @@ jobs:
           targets: ${{ matrix.target }}
 
       - name: Build
-        run: cargo build --verbose --release --target ${{ matrix.target }}
-        # uses: actions-rs/cargo@v1
-        # with:
-        #   use-cross: true
-        #   command: build
-        #   args: --verbose --release --target ${{ matrix.target }}
+        # run: cargo build --verbose --release --target ${{ matrix.target }}
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --verbose --release --target ${{ matrix.target }}
 
       - name: Build archive
         shell: bash
