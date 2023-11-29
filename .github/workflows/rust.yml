@@ -1,14 +1,14 @@
 name: Deploy
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 # on:
 #   push:
-#     tags:
-#       - "[0-9]+.[0-9]+.[0-9]+"
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: write
@@ -43,8 +43,7 @@ jobs:
 
       - name: Get the release version from the tag
         shell: bash
-        run: echo "VERSION=1.2.3" >> $GITHUB_ENV
-        # run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Install Rust
         # Or @nightly if you want
