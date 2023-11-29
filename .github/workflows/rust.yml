@@ -46,5 +46,7 @@ jobs:
 
       - name: Build
         uses: cross-rs/cross-rs
-        run: cross build --verbose --release --target ${{ matrix.target }}
+        with:
+          command: build
+          args: --verbose --release --target ${{ matrix.target }}
 
