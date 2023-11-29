@@ -42,7 +42,7 @@ jobs:
 
           - build: windows-gnu
             os: ubuntu-latest
-            target: x86_64-pc-windows-msvc
+            target: x86_64-pc-windows-gnu
             command: cross
 
     steps:
