@@ -1,10 +1,5 @@
 name: Deploy
 
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
 on:
   push:
     tags:
@@ -70,25 +65,22 @@ jobs:
  
       - name: Build
         run: ${{ matrix.command }} build --verbose --release --target ${{ matrix.target }}
-        # uses: actions-rs/cargo@v1
-        # with:
-        #   use-cross: true
-        #   command: build
-        #   args: --verbose --release --target ${{ matrix.target }}
 
       - name: Build archive
         shell: bash
         run: |
-          # Replace with the name of your binary
           binary_name="rust-action-experiments"
 
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
+          binary_suffix=
           if [[ ${{ matrix.target }} == x86_64-pc-windows-* ]]; then
-            mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
-          else
-            mv "target/${{ matrix.target }}/release/$binary_name" "$dirname"
-          fi
+            binary_suffix=".exe"
+            # mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+          # else
+          #   mv "target/${{ matrix.target }}/release/$binary_name" "$dirname"
+          # fi
+          mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             7z a "$dirname.zip" "$dirname"
