@@ -87,7 +87,7 @@ jobs:
         with:
           path: artifacts
       - run: |
-          ls -l artifacts
+          ls -lR artifacts
           mkdir packages
           cp artifacts/* packages
       - uses: softprops/action-gh-release@v2
