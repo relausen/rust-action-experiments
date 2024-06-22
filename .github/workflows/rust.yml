@@ -66,15 +66,17 @@ jobs:
             7z a "$dirname.zip" "$dirname"
             ASSET=$dirname.zip
             certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
-            echo "ASSET=$ASSET" >> $GITHUB_ENV
-            echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
+            # echo "ASSET=$ASSET" >> $GITHUB_ENV
+            # echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
           else
             tar -czf "$dirname.tar.gz" "$dirname"
             ASSET=$dirname.tar.gz
             shasum -a 256 "$ASSET" > "$ASSET.sha256"
-            echo "ASSET=$ASSET" >> $GITHUB_ENV
-            echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
+            # echo "ASSET=$ASSET" >> $GITHUB_ENV
+            # echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
           fi
+          echo "ASSET=$ASSET" >> $GITHUB_ENV
+          echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
