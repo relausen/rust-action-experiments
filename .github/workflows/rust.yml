@@ -27,9 +27,9 @@ jobs:
             os: macos-latest
             target: aarch64-apple-darwin
 
-          - build: windows-msvc
-            os: windows-latest
-            target: x86_64-pc-windows-msvc
+          # - build: windows-msvc
+          #   os: windows-latest
+          #   target: x86_64-pc-windows-msvc
 
     runs-on: ${{ matrix.os }}
 
@@ -87,7 +87,7 @@ jobs:
         with:
           path: artifacts
       - run: |
-          cp -r artifacts packages
+          cp -r artifacts packages/
       - uses: softprops/action-gh-release@v2
         with:
           files: packages/*
