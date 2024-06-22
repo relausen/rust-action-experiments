@@ -56,6 +56,7 @@ jobs:
 
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
+          echo "DIR=$dirname" >> $GITHUB_ENV
           binary_suffix=
           if [[ ${{ matrix.target }} == x86_64-pc-windows-* ]]; then
             binary_suffix=".exe"
@@ -73,7 +74,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ $dirname }}
+          name: my-artifact
           path: ${{ env.ASSET }}
 
   release:
