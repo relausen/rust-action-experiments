@@ -96,6 +96,7 @@ jobs:
           mkdir packages
           cp artifacts/x86_64-unknown-linux-musl/* packages
           cp artifacts/aarch64-apple-darwin/* packages
+          cp artifacts/x86_64-pc-windows-msvc/* packages
       - uses: softprops/action-gh-release@v2
         with:
           files: packages/*
