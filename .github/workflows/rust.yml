@@ -12,9 +12,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-and-upload:
-    name: Build and upload
-    runs-on: ${{ matrix.os }}
+  build:
+    name: Build
 
     strategy:
       matrix:
@@ -23,22 +22,16 @@ jobs:
           - build: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            command: cargo
 
           - build: macos
             os: macos-latest
             target: aarch64-apple-darwin
-            command: cargo
 
           - build: windows-msvc
             os: windows-latest
             target: x86_64-pc-windows-msvc
-            command: cargo
 
-          - build: windows-gnu
-            os: ubuntu-latest
-            target: x86_64-pc-windows-gnu
-            command: cross
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
@@ -49,22 +42,12 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Install Rust
-        # Or @nightly if you want
         uses: dtolnay/rust-toolchain@stable
-        # Arguments to pass in
         with:
-          # Make Rust compile to our target (defined in the matrix)
           targets: ${{ matrix.target }}
 
-      - name: Install Cross
-        if: matrix.command == 'cross'
-        shell: bash
-        run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-          cargo binstall --no-confirm cross
- 
       - name: Build
-        run: ${{ matrix.command }} build --verbose --release --target ${{ matrix.target }}
+        run: cargo build --verbose --release --target ${{ matrix.target }}
 
       - name: Build archive
         shell: bash
@@ -86,9 +69,23 @@ jobs:
             tar -czf "$dirname.tar.gz" "$dirname"
             echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
           fi
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            ${{ env.ASSET }}
+          name: ${{ env.ASSET }}
+          path: ${{ env.ASSET }}
+    outputs:
+      version: ${{ env.VERSION }}
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+    - build
+    steps:
+      - uses: actions/download-artifact
+        with:
+          path: artifacts
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
