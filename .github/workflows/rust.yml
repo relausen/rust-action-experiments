@@ -60,6 +60,7 @@ jobs:
           if [[ ${{ matrix.target }} == x86_64-pc-windows-* ]]; then
             binary_suffix=".exe"
           fi
+          echo moving target/${{ matrix.target }}/release/${binary_name}${binary_suffix} to $dirname
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
@@ -72,10 +73,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ASSET }}
+          name: ${{ $dirname }}
           path: ${{ env.ASSET }}
-    outputs:
-      version: ${{ env.VERSION }}
 
   release:
     name: Release
