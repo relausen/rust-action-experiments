@@ -71,12 +71,15 @@ jobs:
             ASSET=$dirname.tar.gz
             echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
             shasum -a 256 "$ASSET" > "$ASSET.sha256"
+            echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
           fi
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
-          path: ${{ env.ASSET }}
+          path: |
+            ${{ env.ASSET }}
+            ${{ env.CHECKSUM }}
 
   release:
     name: Release
