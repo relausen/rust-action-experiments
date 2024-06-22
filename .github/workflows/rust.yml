@@ -56,12 +56,10 @@ jobs:
 
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
-          echo "DIR=$dirname" >> $GITHUB_ENV
           binary_suffix=
           if [[ ${{ matrix.target }} == x86_64-pc-windows-* ]]; then
             binary_suffix=".exe"
           fi
-          echo moving target/${{ matrix.target }}/release/${binary_name}${binary_suffix} to $dirname
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
@@ -70,6 +68,7 @@ jobs:
           else
             tar -czf "$dirname.tar.gz" "$dirname"
             echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+            shasum -a 256 "$ASSET" > "$ASSET.sha256"
           fi
       - name: Upload artifact
         uses: actions/upload-artifact@v4
