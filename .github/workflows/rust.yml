@@ -79,7 +79,7 @@ jobs:
             ${{ env.ASSET }}
             ${{ env.CHECKSUM }}
     outputs:
-      ${{ matrix.os }}: ${{ matrix.target }}
+      "${{ matrix.os }}": "${{ matrix.target }}"
 
   release:
     name: Release
