@@ -90,7 +90,7 @@ jobs:
         with:
           path: artifacts
       - run: |
-          echo ${{ needs.build.outputs }}
+          echo ${{ needs.build.outputs.x86_64-unknown-linux-musl }}
           mkdir packages
           cp artifacts/x86_64-unknown-linux-musl/* packages
           cp artifacts/aarch64-apple-darwin/* packages
