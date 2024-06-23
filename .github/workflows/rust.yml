@@ -62,7 +62,7 @@ jobs:
             binary_suffix=".exe"
             compress="7z a"
             asset_extension=".zip"
-            sha_cmd_template='certutil -hashfile "THE_ASSET" SHA256'
+            sha_cmd_template='certutil -hashfile THE_ASSET SHA256'
           else
             binary_suffix=
             compress="tar zcf"
