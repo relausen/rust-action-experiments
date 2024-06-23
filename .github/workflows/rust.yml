@@ -26,6 +26,10 @@ jobs:
             os: macos-latest
             target: aarch64-apple-darwin
 
+          - build: macos
+            os: macos-latest
+            target: x86_64-apple-darwin
+
           # - build: windows-msvc
           #   os: windows-latest
           #   target: x86_64-pc-windows-msvc
@@ -93,9 +97,6 @@ jobs:
           for d in artifacts/*; do
             cp $d/* packages
           done
-          # cp artifacts/x86_64-unknown-linux-musl/* packages
-          # cp artifacts/aarch64-apple-darwin/* packages
-          # cp artifacts/x86_64-pc-windows-msvc/* packages
       - uses: softprops/action-gh-release@v2
         with:
           files: packages/*
