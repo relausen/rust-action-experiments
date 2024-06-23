@@ -72,6 +72,7 @@ jobs:
           echo "ASSET=$ASSET" >> $GITHUB_ENV
           echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
           echo "${{ matrix.target }}=1" >> "$GITHUB_OUTPUT"
+          echo ${{ toJSON(matrix) }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
