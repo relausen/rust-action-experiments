@@ -65,12 +65,12 @@ jobs:
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            7z a "$dirname.zip" "$dirname"
             ASSET=$dirname.zip
+            7z a "$ASSET" "$dirname"
             certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
           else
-            tar -czf "$dirname.tar.gz" "$dirname"
             ASSET=$dirname.tar.gz
+            tar -czf "$ASSET" "$dirname"
             shasum -a 256 "$ASSET" > "$ASSET.sha256"
           fi
           echo "ASSET=$ASSET" >> $GITHUB_ENV
