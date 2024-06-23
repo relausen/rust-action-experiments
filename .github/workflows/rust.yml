@@ -18,21 +18,21 @@ jobs:
     strategy:
       matrix:
         include:
-          - build: linux
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-musl
+          # - build: linux
+          #   os: ubuntu-latest
+          #   target: x86_64-unknown-linux-musl
 
-          - build: macos
-            os: macos-latest
-            target: aarch64-apple-darwin
+          # - build: macos
+          #   os: macos-latest
+          #   target: aarch64-apple-darwin
 
-          - build: macos
-            os: macos-latest
-            target: x86_64-apple-darwin
+          # - build: macos
+          #   os: macos-latest
+          #   target: x86_64-apple-darwin
 
-          # - build: windows-msvc
-          #   os: windows-latest
-          #   target: x86_64-pc-windows-msvc
+          - build: windows-msvc
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
 
     runs-on: ${{ matrix.os }}
 
@@ -58,9 +58,14 @@ jobs:
           binary_name="rust-action-experiments"
           dirname="${binary_name}-${VERSION}-${{ matrix.target }}"
           mkdir "$dirname"
-          binary_suffix=
-          if [[ ${{ matrix.target }} == x86_64-pc-windows-* ]]; then
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
             binary_suffix=".exe"
+            compress_command="7z a"
+            asset_extension=".zip"
+          else
+            binary_suffix=
+            compress_command="tar zcf"
+            asset_extension=".tar.gz"
           fi
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
 
@@ -68,6 +73,8 @@ jobs:
             ASSET=$dirname.zip
             7z a "$ASSET" "$dirname"
             certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
+            cat "$ASSET.sha256"
+            echo $(shasum -a 256 "$ASSET")
           else
             ASSET=$dirname.tar.gz
             tar -czf "$ASSET" "$dirname"
