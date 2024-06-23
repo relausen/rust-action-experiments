@@ -18,17 +18,17 @@ jobs:
     strategy:
       matrix:
         include:
-          # - build: linux
-          #   os: ubuntu-latest
-          #   target: x86_64-unknown-linux-musl
+          - build: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
 
-          # - build: macos
-          #   os: macos-latest
-          #   target: aarch64-apple-darwin
+          - build: macos
+            os: macos-latest
+            target: aarch64-apple-darwin
 
-          # - build: macos
-          #   os: macos-latest
-          #   target: x86_64-apple-darwin
+          - build: macos
+            os: macos-latest
+            target: x86_64-apple-darwin
 
           - build: windows-msvc
             os: windows-latest
@@ -67,17 +67,20 @@ jobs:
             binary_suffix=
             compress="tar zcf"
             asset_extension=".tar.gz"
+            sha_cmd_template='shasum -a 256 THE_ASSET'
           fi
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
           ASSET=${dirname}${asset_extension}
           ${compress} "$ASSET" "$dirname"
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            sha_cmd=${sha_cmd_template/THE_ASSET/${ASSET}}
-            ${sha_cmd} > "$ASSET.sha256"
-            # certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
-          else
-            shasum -a 256 "$ASSET" > "$ASSET.sha256"
-          fi
+          sha_cmd=${sha_cmd_template/THE_ASSET/${ASSET}}
+          ${sha_cmd} > "$ASSET.sha256"
+          # if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          #   sha_cmd=${sha_cmd_template/THE_ASSET/${ASSET}}
+          #   ${sha_cmd} > "$ASSET.sha256"
+          #   # certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
+          # else
+          #   shasum -a 256 "$ASSET" > "$ASSET.sha256"
+          # fi
           echo "ASSET=$ASSET" >> $GITHUB_ENV
           echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
       - name: Upload artifact
