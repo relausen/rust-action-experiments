@@ -71,8 +71,6 @@ jobs:
           fi
           echo "ASSET=$ASSET" >> $GITHUB_ENV
           echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
-          echo "${{ matrix.target }}=1" >> "$GITHUB_OUTPUT"
-          echo "${{ toJSON(matrix.target) }}"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -91,12 +89,13 @@ jobs:
         with:
           path: artifacts
       - run: |
-          echo ${{ needs.build.outputs.x86_64-unknown-linux-musl }}
-          echo ${{ needs.build.outputs.aarch64-apple-darwin }}
           mkdir packages
-          cp artifacts/x86_64-unknown-linux-musl/* packages
-          cp artifacts/aarch64-apple-darwin/* packages
-          cp artifacts/x86_64-pc-windows-msvc/* packages
+          for d in artifacts/*; do
+            cp $d/* packages
+          done
+          # cp artifacts/x86_64-unknown-linux-musl/* packages
+          # cp artifacts/aarch64-apple-darwin/* packages
+          # cp artifacts/x86_64-pc-windows-msvc/* packages
       - uses: softprops/action-gh-release@v2
         with:
           files: packages/*
