@@ -71,6 +71,7 @@ jobs:
           fi
           echo "ASSET=$ASSET" >> $GITHUB_ENV
           echo "CHECKSUM=$ASSET.sha256" >> $GITHUB_ENV
+          echo "{{ matrix.target }}=1" >> "$GITHUB_OUTPUT"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -78,8 +79,6 @@ jobs:
           path: |
             ${{ env.ASSET }}
             ${{ env.CHECKSUM }}
-    outputs:
-      "${{ matrix.os }}": "${{ matrix.target }}"
 
   release:
     name: Release
@@ -91,7 +90,7 @@ jobs:
         with:
           path: artifacts
       - run: |
-          echo "${{ needs.build.outputs }}"
+          echo ${{ needs.build.outputs }}
           mkdir packages
           cp artifacts/x86_64-unknown-linux-musl/* packages
           cp artifacts/aarch64-apple-darwin/* packages
