@@ -69,7 +69,7 @@ jobs:
             asset_extension=".tar.gz"
           fi
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
-          ASSET=${dirname}.${asset_extension}
+          ASSET=${dirname}${asset_extension}
           ${compress} "$ASSET" "$dirname"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             $(sha_cmd/THE_ASSET/${ASSET}) > "$ASSET.sha256"
