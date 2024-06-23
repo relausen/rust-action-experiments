@@ -62,7 +62,7 @@ jobs:
             binary_suffix=".exe"
             compress="7z a"
             asset_extension=".zip"
-            sha_cmd="certutil -hashfile "THE_ASSET" SHA256"
+            sha_cmd_template='certutil -hashfile "THE_ASSET" SHA256'
           else
             binary_suffix=
             compress="tar zcf"
@@ -72,7 +72,8 @@ jobs:
           ASSET=${dirname}${asset_extension}
           ${compress} "$ASSET" "$dirname"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            $(${sha_cmd/THE_ASSET/${ASSET}}) > "$ASSET.sha256"
+            sha_cmd=${sha_cmd_template/THE_ASSET/${ASSET}}
+            ${sha_cmd} > "$ASSET.sha256"
             # certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
           else
             shasum -a 256 "$ASSET" > "$ASSET.sha256"
