@@ -60,24 +60,21 @@ jobs:
           mkdir "$dirname"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             binary_suffix=".exe"
-            compress_command="7z a"
+            compress="7z a"
             asset_extension=".zip"
+            sha_cmd="certutil -hashfile "THE_ASSET" SHA256"
           else
             binary_suffix=
-            compress_command="tar zcf"
+            compress="tar zcf"
             asset_extension=".tar.gz"
           fi
           mv "target/${{ matrix.target }}/release/${binary_name}${binary_suffix}" "$dirname"
-
+          ASSET=${dirname}.${asset_extension}
+          ${compress} "$ASSET" "$dirname"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            ASSET=$dirname.zip
-            7z a "$ASSET" "$dirname"
-            certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
-            cat "$ASSET.sha256"
-            echo $(shasum -a 256 "$ASSET")
+            $(sha_cmd/THE_ASSET/${ASSET}) > "$ASSET.sha256"
+            # certutil -hashfile "$ASSET" SHA256 > "$ASSET.sha256"
           else
-            ASSET=$dirname.tar.gz
-            tar -czf "$ASSET" "$dirname"
             shasum -a 256 "$ASSET" > "$ASSET.sha256"
           fi
           echo "ASSET=$ASSET" >> $GITHUB_ENV
