@@ -52,8 +52,7 @@ jobs:
         shell: bash
         run: |
           binary_name="rust-action-experiments"
-          # dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
-          dirname="$binary_name-$VERSION -${{ matrix.target }}"
+          dirname="${binary_name}-${VERSION}-${{ matrix.target }}"
           mkdir "$dirname"
           binary_suffix=
           if [[ ${{ matrix.target }} == x86_64-pc-windows-* ]]; then
@@ -79,6 +78,8 @@ jobs:
           path: |
             ${{ env.ASSET }}
             ${{ env.CHECKSUM }}
+    outputs:
+      ${{ matrix.os }}: ${{ matrix.target }}
 
   release:
     name: Release
@@ -90,7 +91,7 @@ jobs:
         with:
           path: artifacts
       - run: |
-          ls -lR artifacts
+          echo "${{ needs.build.outputs }}"
           mkdir packages
           cp artifacts/x86_64-unknown-linux-musl/* packages
           cp artifacts/aarch64-apple-darwin/* packages
