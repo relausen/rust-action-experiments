@@ -26,9 +26,9 @@ jobs:
             os: macos-latest
             target: aarch64-apple-darwin
 
-          - build: windows-msvc
-            os: windows-latest
-            target: x86_64-pc-windows-msvc
+          # - build: windows-msvc
+          #   os: windows-latest
+          #   target: x86_64-pc-windows-msvc
 
     runs-on: ${{ matrix.os }}
 
@@ -91,6 +91,7 @@ jobs:
           path: artifacts
       - run: |
           echo ${{ needs.build.outputs.x86_64-unknown-linux-musl }}
+          echo ${{ needs.build.outputs.aarch64-apple-darwin }}
           mkdir packages
           cp artifacts/x86_64-unknown-linux-musl/* packages
           cp artifacts/aarch64-apple-darwin/* packages
